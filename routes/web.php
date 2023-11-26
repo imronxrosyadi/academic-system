@@ -10,6 +10,8 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ValueWeightController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Category;
 use App\Models\CriteriaComparison;
@@ -63,6 +65,12 @@ Route::get('/criteria/delete/{id}', [CriteriaController::class, 'delete']);
 
 Route::resource('/value-weight', ValueWeightController::class);
 Route::get('/value-weight/delete/{id}', [ValueWeightController::class, 'delete']);
+
+Route::resource('/subject', SubjectController::class);
+Route::get('/subject/delete/{id}', [SubjectController::class, 'delete']);
+
+Route::resource('/student', StudentController::class);
+Route::get('/student/delete/{id}', [StudentController::class, 'delete']);
 
 Route::prefix('/calculate')->group(function () {
 

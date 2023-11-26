@@ -15,10 +15,11 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            ValueWeightSeeder::class,
-            IndeksRandomConsistencySeeder::class,
-            AlternativeSeeder::class,
-            CriteriaSeeder::class,
+//            ValueWeightSeeder::class,
+//            IndeksRandomConsistencySeeder::class,
+//            AlternativeSeeder::class,
+//            CriteriaSeeder::class,
+            SubjectSeeder::class,
             UserSeeder::class
         ]);
         // User::factory(3)->create();

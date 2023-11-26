@@ -22,16 +22,16 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
-    <li class="nav-item {{ Request::is('alternative') ? 'active' : '' }}">
-        <a class="nav-link" href="/alternative">
+    <li class="nav-item {{ Request::is('student') ? 'active' : '' }}">
+        <a class="nav-link" href="/student">
             <i class="fas fa-user-friends"></i>
-            <span>Alternatif</span></a>
+            <span>Data Siswa</span></a>
     </li>
 
-    <li class="nav-item {{ Request::is('value-weight') ? 'active' : '' }}">
-        <a class="nav-link" href="/value-weight">
+    <li class="nav-item {{ Request::is('subject') ? 'active' : '' }}">
+        <a class="nav-link" href="/subject">
             <i class="fas fa-balance-scale"></i>
-            <span>Nilai Bobot</span></a>
+            <span>Mata Pelajaran</span></a>
     </li>
 
     <li class="nav-item  {{ Request::is('criteria') ? 'active' : '' }}">
