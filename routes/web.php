@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\SubjectGradeController;
 use App\Http\Controllers\ValueWeightController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\StudentController;
@@ -71,6 +72,13 @@ Route::get('/subject/delete/{id}', [SubjectController::class, 'delete']);
 
 Route::resource('/student', StudentController::class);
 Route::get('/student/delete/{id}', [StudentController::class, 'delete']);
+
+Route::resource('/subject-grade', SubjectGradeController::class)->except(['show']);
+Route::get('/subject-grade/delete/{id}', [SubjectGradeController::class, 'delete']);
+Route::get('/subject-grade/subjects', [SubjectGradeController::class, 'subjects'])->name('subject-grade.subjects');
+Route::get('/subject-grade/subject/{id}', [SubjectGradeController::class, 'subject'])->name('subject-grade.subject');
+Route::get('/subject-grade/students', [SubjectGradeController::class, 'students'])->name('subject-grade.students');
+Route::get('/subject-grade/student/{id}', [SubjectGradeController::class, 'student'])->name('subject-grade.student');
 
 Route::prefix('/calculate')->group(function () {
 

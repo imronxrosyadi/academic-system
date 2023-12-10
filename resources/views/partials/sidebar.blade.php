@@ -34,10 +34,10 @@
             <span>Mata Pelajaran</span></a>
     </li>
 
-    <li class="nav-item  {{ Request::is('criteria') ? 'active' : '' }}">
-        <a class="nav-link" href="/criteria">
+    <li class="nav-item  {{ Request::is('subject-grade') || Request::is('subject-grade/subjects') || Request::is('subject-grade/subject/{id}') || Request::is('subject-grade/students') || Request::is('subject-grade/student/{id}') ? 'active' : '' }}">
+        <a class="nav-link" href="/subject-grade">
             <i class="fas fa-splotch"></i>
-            <span>Kriteria</span></a>
+            <span>Nilai Mata Pelajaran</span></a>
     </li>
 
     <li class="nav-item {{ (Request::is('calculate/result') || Request::is('calculate/criteria-comparison') || Request::is('calculate/alternative-comparison')) ? 'active' : '' }}">

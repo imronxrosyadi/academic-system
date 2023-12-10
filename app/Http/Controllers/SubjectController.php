@@ -131,5 +131,4 @@ class SubjectController extends Controller
             ->with('err', $err);
     }
 
-
 }
