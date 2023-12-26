@@ -46,7 +46,7 @@
           <footer class="sticky-footer bg-primary shadow">
               <div class="container my-auto">
                   <div class="copyright text-center text-white my-auto">
-                      <span>&copy; Scholarship Acceptance 2023. All rights reserved.</span>
+                      <span>&copy; Annida Ul Hasanah 2023. All rights reserved.</span>
                   </div>
               </div>
           </footer>

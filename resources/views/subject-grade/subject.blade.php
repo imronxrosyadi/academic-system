@@ -21,20 +21,49 @@
         <div class="col-lg-10">
             <div class="row mb-3">
                 <div class="col-lg-6">
-                    <h1>Mata Pelajaran</h1>
+                    <h1>Nilai Mata Pelajaran</h1>
                 </div>
-                <div class="col-lg-6 text-right">
-                    <a href="/subject/create" class="btn btn-primary btn-icon">
-                    <span class="icon text-white-50">
-                        <i class="fas fa-plus"></i>
-                    </span>
-                        <span class="text">Tambah Data Mata Pelajaran</span>
+            </div>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Data Mata Pelajaran</h6>
+                </div>
+                <div class="card-body text-center">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>Kode Mata Pelajaran</th>
+                                <th>Nama Mata Pelajaran</th>
+                                <th>Jangka Waktu (Dalam Minggu)</th>
+                                <th>Semester</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>{{ $subject->code; }}</td>
+                                <td>{{ $subject->name; }}</td>
+                                <td>{{ $subject->time_allocation_in_week; }}</td>
+                                <td>{{ $subject->semester; }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-lg-12 text-right">
+                    <a href="/subject-grade/create/{{$type}}/{{$typeId}}" class="btn btn-primary btn-icon">
+                <span class="icon text-white-50">
+                    <i class="fas fa-plus"></i>
+                </span>
+                        <span class="text">Tambah Data Nilai</span>
                     </a>
                 </div>
             </div>
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Tabel Data Mata Pelajaran</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Tabel Data Nilai Siswa</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -42,41 +71,39 @@
                             <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Kode</th>
-                                <th>Nama</th>
-                                <th>Jangka Waktu Dalam Minggu</th>
-                                <th>Semester</th>
-                                <th>Waktu Dibuat</th>
-                                <th>Update Terakhir</th>
+                                <th>NISN</th>
+                                <th>Nama Siswa</th>
+                                <th>Nilai</th>
                                 <th>Aksi</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($subjects as $index => $subject)
-                                <tr>
-                                    <th scope="row">{{ $index+1 }}</th>
-                                    <td>{{ $subject->code; }}</td>
-                                    <td>{{ $subject->name; }}</td>
-                                    <td>{{ $subject->time_allocation_in_week; }}</td>
-                                    <td>{{ $subject->semester; }}</td>
-                                    <td>{{ $subject->created_at; }}</td>
-                                    <td>{{ $subject->updated_at; }}</td>
-                                    <td>
-                                        <a href="/subject/{{$subject->id}}/edit" class="btn btn-primary btn-circle">
-                                            <i class="fas fa-pencil-square-o"></i>
-                                        </a>
-
-                                        <a class="btn btn-danger btn-circle" data-toggle="modal" id="smallButton"
-                                           data-attr="/subject/delete/{{ $subject->id }}" data-target="#smallModal">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
+                            @if(!empty($subjectGrades))
+                                @foreach($subjectGrades as $index => $subjectGrade)
+                                    <tr>
+                                        <th scope="row">{{ (int) $index+1 }}</th>
+                                        <td>{{ $subjectGrade->students->nisn; }}</td>
+                                        <td>{{ $subjectGrade->students->full_name; }}</td>
+                                        <td>{{ $subjectGrade->grade; }}</td>
+                                        <td>
+                                            <a href="/subject-grade/edit/{{$subjectGrade->id}}/{{$type}}" class="btn btn-primary btn-circle">
+                                                <i class="fas fa-pencil-square-o"></i>
+                                            </a>
+                                            <a class="btn btn-danger btn-circle" data-toggle="modal" id="smallButton"
+                                               data-attr="/subject-grade/delete/{{$subjectGrade->id}}/{{$type}}/{{$subject->id}}" data-target="#smallModal">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                             </tbody>
                         </table>
                     </div>
                 </div>
+            </div>
+            <div>
+                <a href="/subject-grade/subjects" class="w-30 mt-3"><- Back</a>
             </div>
         </div>
     </div>

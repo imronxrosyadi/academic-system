@@ -64,7 +64,7 @@
         <footer class="sticky-footer bg-white">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
-                    <span>&copy; Al - Fath School Indonesia 2023. All rights reserved.</span>
+                    <span>&copy; Annida Ul Hasanah 2023. All rights reserved.</span>
                 </div>
             </div>
         </footer>

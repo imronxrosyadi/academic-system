@@ -4,16 +4,13 @@
 <div class="row justify-content-center text-light">
     <div class="col-md-8 d-flex align-items-center mb-5 mt-5">
         <div class="row text-center justify-content-center">
-            <img src="{{ asset('img/al-fath-white.png') }}" alt="Al - Fath School" style="width: 200px; height: 200px">
-            <h1><b>Al - Fath School Indonesia</b></h1>
-            <h5>Sistem Penunjang Keputusan dengan Metode AHP <br>(Analytical Hierarchy Process)</h5>
+            <img src="{{ asset('img/logo-annida-nobg.png') }}" alt="Annida Ul Hasanah" style="width: 200px; height: 200px">
+            <h1><b>Annida Ul Hasanah</b></h1>
+            <h5>Sistem Informasi Nilai Pelajaran</h5>
             <a type="button" class="btn btn-outline-light rounded-pill d-grid gap-2 col-4 mt-3 mr-5">Tentang</a>
             <a href="/login" type="button" class="btn btn-outline-light rounded-pill d-grid gap-2 col-4 mt-3">Masuk</a>
         </div>
     </div>
-{{--    <div class="col-md-4 mt-5 mb-5">--}}
-{{--        <img src="img/home.png" alt="home" style=" width: 800px; ">--}}
-{{--    </div>--}}
 </div>
 @endsection
 @section('about')
@@ -23,12 +20,12 @@
         </div>
         <div class="col-md-5 d-flex align-items-center">
             <div class="row">
-                <h1><b>AHP (Analytical Hierarchy Process)</b></h1>
+                <h1><b>Sistem Informasi Annida Ul Hasanah</b></h1>
                 <h5>
-                    The Analytic Hierarchy Process (AHP) is a method for organizing and analyzing complex decisions, using math and psychology. It was developed by Thomas L. Saaty in the 1970s and has been refined since then. It contains three parts: the ultimate goal or problem you’re trying to solve, all of the possible solutions, called alternatives, and the criteria you will judge the alternatives on. AHP provides a rational framework for a needed decision by quantifying its criteria and alternative options, and for relating those elements to the overall goal.
+                    Annida Ul Hasanah memperkenalkan sistem informasi terkini yang dirancang secara eksklusif untuk penginputan nilai mata pelajaran. Sistem ini memberikan solusi efektif bagi staff berkepentingan, seperti guru dan staf administrasi, untuk melakukan penilaian secara mudah dan efisien. Melalui antarmuka yang aman dan terbatas aksesnya, hanya staff yang memiliki wewenang yang dapat menginput nilai siswa ke dalam sistem.
                     <br>
                     <br>
-                    Stakeholders compare the importance of criteria, two at a time, through pair-wise comparisons. Example, do you care about job benefits or having a short commute more, and by how much more? AHP converts these evaluations into numbers, which can be compared to all of the possible criteria. This quantifying capability distinguishes the AHP from other decision making techniques.
+                    Dengan implementasi sistem ini, proses penginputan nilai menjadi lebih terstruktur dan terotomatisasi, menghemat waktu serta mengurangi potensi kesalahan manusiawi. Secara keseluruhan, sistem ini memberikan kontribusi signifikan terhadap efisiensi administrasi sekolah, sambil memastikan keamanan dan keterbatasan akses yang ketat sesuai dengan kebutuhan instansi Annida Ul Hasanah.
                 </h5>
             </div>
         </div>

@@ -35,11 +35,53 @@ class SubjectGradeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($type, $id)
     {
+        $subjectGrades = [];
+        $subjects = [];
+        $students = [];
+        if ($type === 'student') {
+            $subjectGrades = SubjectGrade::with(['subjects','students'])->where('student_id', $id)->get();
+        } else if ($type === 'subject') {
+            $subjectGrades = SubjectGrade::with(['subjects','students'])->where('subject_id', $id)->get();
+        }
+        @dd($subjectGrades);
+
+
+
         return view('subject-grade.create', [
             'title' => 'Subject Grade',
             'active' => 'subject-grade'
+        ]);
+    }
+
+    public function createByType($type, $id)
+    {
+        $subjectGrades = [];
+        $subjects = [];
+        $students = [];
+        $student = new Student();
+        $subject = new Subject();
+        if ($type === 'student') {
+            $subjectGrades = SubjectGrade::with(['subjects','students'])->where('student_id', $id)
+                ->whereIn('subject_id', Subject::all()->where('id' ,'>' ,0)->pluck('id')->toArray())
+                ->get();
+            $subjects = Subject::all()->whereNotIn('id', SubjectGrade::all()->where('student_id', $id)->where('subject_id', '>', 0)->pluck('subject_id')->toArray());
+            $student = Student::all()->where('id', $id)->firstOrFail();
+        } else if ($type === 'subject') {
+            $subjectGrades = SubjectGrade::with(['subjects','students'])->where('subject_id', $id)->get();
+            $students = Student::all()->whereNotIn('id', SubjectGrade::all()->where('subject_id', $id)->where('student_id', '>', 0)->pluck('student_id')->toArray());
+            $subject = Subject::all()->where('id', $id)->firstOrFail();
+        }
+
+        return view('subject-grade.create', [
+            'title' => 'Subject Grade',
+            'active' => 'subject-grade',
+            'students' => $students,
+            'subjects' => $subjects,
+            'student' => $student,
+            'subject' => $subject,
+            'type' => $type
         ]);
     }
 
@@ -56,12 +98,15 @@ class SubjectGradeController extends Controller
             'student_id' => 'required',
             'subject_id' => 'required|max:255'
         ]);
-
-//        @dd($request);
         SubjectGrade::create($validatedData);
 
-        return redirect('/subject-grade')
-            ->with('success', 'Created subject grade success!');
+        if ($request->type === 'student') {
+            return redirect()->route('subject-grade.student', ['id' => $request->student_id])
+                ->with('success', 'Created subject grade success!');
+        } else {
+            return redirect()->route('subject-grade.subject', ['id' => $request->subject_id])
+                ->with('success', 'Created subject grade success!');
+        }
     }
 
     /**
@@ -75,12 +120,14 @@ class SubjectGradeController extends Controller
         //
     }
 
-    public function edit($id)
+    public function editByType($id, $type)
     {
-        $subjectGrade = SubjectGrade::where('id', $id)->first();
+        $subjectGrade = SubjectGrade::with(['subjects','students'])->where('id', $id)->firstOrFail();
+
         return view('subject-grade.edit', [
-            "subject-grade" => $subjectGrade,
-            'active' => 'subject-grade'
+            'subjectGrade' => $subjectGrade,
+            'active' => 'subject-grade',
+            'type' => $type
         ]);
     }
 
@@ -97,17 +144,23 @@ class SubjectGradeController extends Controller
             'grade'   => $request->grade
         ]);
 
-        return redirect()
-            ->route('subject-grade.index')
-            ->with('success','Subject grade updated successfully');
+        if ($request->type === 'student') {
+            return redirect()->route('subject-grade.student', ['id' => $subjectGrade->student_id])
+                ->with('success', 'Subject grade updated successfully');
+        } else {
+            return redirect()->route('subject-grade.subject', ['id' => $subjectGrade->subject_id])
+                ->with('success', 'Subject grade updated successfully');
+        }
     }
 
-    public function delete($code)
+    public function delete($id, $type, $typeId)
     {
-        $subjectGrade = SubjectGrade::where('id', $code)->first();
+        $subjectGrade = SubjectGrade::where('id', $id)->firstOrFail();
         return view('subject-grade.delete', [
-            "subject-grade" => $subjectGrade,
-            'active' => 'subject-grade'
+            "subjectGrade" => $subjectGrade,
+            'active' => 'subject-grade',
+            'type' => $type,
+            'typeId' => $typeId
         ]);
     }
 
@@ -117,11 +170,16 @@ class SubjectGradeController extends Controller
      * @param  \App\Models\SubjectGrade  $subjectGrade
      * @return \Illuminate\Http\Response
      */
-    public function destroy($code)
+    public function destroy($type, $id, $typeId)
     {
-        $subjectGrade = SubjectGrade::where('id', $code)->firstorfail()->delete();
+        $subjectGrade = SubjectGrade::where('id', $id)->firstorfail()->delete();
 
-        $page = 'subject-grade.index';
+        $page = '';
+        if ($type === 'student') {
+            $page = 'subject-grade.student';
+        } else {
+            $page = 'subject-grade.subject';
+        }
         $success = '';
         $err = '';
         if($subjectGrade) {
@@ -131,7 +189,7 @@ class SubjectGradeController extends Controller
         }
 
         return redirect()
-            ->route($page)
+            ->route($page, $typeId)
             ->with('success', $success)
             ->with('err', $err);
     }
@@ -147,9 +205,13 @@ class SubjectGradeController extends Controller
     public function subject($id)
     {
         $subjectGrades = SubjectGrade::with(['subjects','students'])->where('subject_id', $id)->get();
+        $subject = Subject::where('id', $id)->firstOrFail();
         return view('subject-grade.subject', [
-            "subject-grade" => $subjectGrades ,
-            'active' => 'subject-grade'
+            "subjectGrades" => $subjectGrades ,
+            'active' => 'subject-grade',
+            "type" => 'subject',
+            "typeId" => $id,
+            'subject' => $subject
         ]);
     }
 
@@ -164,9 +226,13 @@ class SubjectGradeController extends Controller
     public function student($id)
     {
         $subjectGrades = SubjectGrade::with(['subjects','students'])->where('student_id', $id)->get();
+        $student = Student::where('id', $id)->firstOrFail();
         return view('subject-grade.student', [
             "subjectGrades" => $subjectGrades,
-            'active' => 'subject-grade'
+            'active' => 'subject-grade',
+            "type" => 'student',
+            "typeId" => $id,
+            'student' => $student
         ]);
     }
 

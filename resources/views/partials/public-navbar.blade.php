@@ -10,8 +10,8 @@
         <li class="nav-item">
             <a class="nav-link" href="/">
 {{--                <h5 class="text-primary"><b>Scholarship Acceptance Application</b></h5>--}}
-                <img src="{{ asset('img/al-fath.png') }}" alt="logo-al-fath" width="65px" height="65px">
-                <h6 class="text-dark mt-2">Al - Fath <br> School <br> Indonesia</h6>
+                <img src="{{ asset('img/logo-annida-nobg.png') }}" alt="logo-annida" width="65px" height="65px">
+                <h6 class="text-dark mt-2 ml-3">Annida <br> Ul Hasanah</h6>
             </a>
         </li>
 

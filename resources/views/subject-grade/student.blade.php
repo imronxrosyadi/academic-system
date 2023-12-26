@@ -40,9 +40,9 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td>{{ $subjectGrades[0]->students->nisn; }}</td>
-                                <td>{{ $subjectGrades[0]->students->full_name; }}</td>
-                                <td>{{ $subjectGrades[0]->students->nickname; }}</td>
+                                <td>{{ $student->nisn; }}</td>
+                                <td>{{ $student->full_name; }}</td>
+                                <td>{{ $student->nickname; }}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -51,7 +51,7 @@
             </div>
             <div class="row mb-3">
                 <div class="col-lg-12 text-right">
-                    <a href="/student/create" class="btn btn-primary btn-icon">
+                    <a href="/subject-grade/create/{{$type}}/{{$typeId}}" class="btn btn-primary btn-icon">
                     <span class="icon text-white-50">
                         <i class="fas fa-plus"></i>
                     </span>
@@ -76,24 +76,25 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($subjectGrades as $index => $subjectGrade)
-                                <tr>
-                                    <th scope="row">{{ (int) $index+1 }}</th>
-                                    <td>{{ $subjectGrade->subjects->code; }}</td>
-                                    <td>{{ $subjectGrade->subjects->name; }}</td>
-                                    <td>{{ $subjectGrade->grade; }}</td>
-                                    <td>
-{{--                                        <a href="/subject/{{$subject->id}}/edit" class="btn btn-primary btn-circle">--}}
-{{--                                            <i class="fas fa-pencil-square-o"></i>--}}
-{{--                                        </a>--}}
-
-{{--                                        <a class="btn btn-danger btn-circle" data-toggle="modal" id="smallButton"--}}
-{{--                                           data-attr="/subject/delete/{{ $subject->id }}" data-target="#smallModal">--}}
-{{--                                            <i class="fas fa-trash"></i>--}}
-{{--                                        </a>--}}
-                                    </td>
-                                </tr>
-                            @endforeach
+                            @if(!empty($subjectGrades))
+                                @foreach($subjectGrades as $index => $subjectGrade)
+                                    <tr>
+                                        <th scope="row">{{ (int) $index+1 }}</th>
+                                        <td>{{ $subjectGrade->subjects->code; }}</td>
+                                        <td>{{ $subjectGrade->subjects->name; }}</td>
+                                        <td>{{ $subjectGrade->grade; }}</td>
+                                        <td>
+                                            <a href="/subject-grade/edit/{{$subjectGrade->id}}/{{$type}}" class="btn btn-primary btn-circle">
+                                                <i class="fas fa-pencil-square-o"></i>
+                                            </a>
+                                            <a class="btn btn-danger btn-circle" data-toggle="modal" id="smallButton"
+                                               data-attr="/subject-grade/delete/{{$subjectGrade->id}}/{{$type}}/{{$student->id}}" data-target="#smallModal">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                             </tbody>
                         </table>
                     </div>

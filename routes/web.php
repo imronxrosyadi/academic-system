@@ -30,8 +30,8 @@ use App\Models\CriteriaComparison;
 
 Route::get('/', function () {
     return view('home', [
-        "title" => "Scholarship Acceptance",
-        "active" => 'scholarship acceptance'
+        "title" => "Annida Ul Hasanah",
+        "active" => 'annida ul hasanah'
     ]);
 });
 
@@ -58,15 +58,6 @@ Route::get('/dashboard', function() {
     return view('dashboard.index');
 })->middleware('auth');
 
-Route::resource('/alternative', AlternativeController::class);
-Route::get('/alternative/delete/{id}', [AlternativeController::class, 'delete']);
-
-Route::resource('/criteria', CriteriaController::class);
-Route::get('/criteria/delete/{id}', [CriteriaController::class, 'delete']);
-
-Route::resource('/value-weight', ValueWeightController::class);
-Route::get('/value-weight/delete/{id}', [ValueWeightController::class, 'delete']);
-
 Route::resource('/subject', SubjectController::class);
 Route::get('/subject/delete/{id}', [SubjectController::class, 'delete']);
 
@@ -74,26 +65,13 @@ Route::resource('/student', StudentController::class);
 Route::get('/student/delete/{id}', [StudentController::class, 'delete']);
 
 Route::resource('/subject-grade', SubjectGradeController::class)->except(['show']);
-Route::get('/subject-grade/delete/{id}', [SubjectGradeController::class, 'delete']);
+Route::get('/subject-grade/delete/{type}/{id}/{typeId}', [SubjectGradeController::class, 'delete']);
+Route::delete('/subject-grade/dest/{type}/{id}/{typeId}', [SubjectGradeController::class, 'destroy'])->name('subject-grade.destroy');
+Route::get('/subject-grade/create/{type}/{id}', [SubjectGradeController::class, 'createByType'])->name('subject-grade.createByType');
+Route::get('/subject-grade/edit/{type}/{id}', [SubjectGradeController::class, 'editByType'])->name('subject-grade.editByType');
 Route::get('/subject-grade/subjects', [SubjectGradeController::class, 'subjects'])->name('subject-grade.subjects');
 Route::get('/subject-grade/subject/{id}', [SubjectGradeController::class, 'subject'])->name('subject-grade.subject');
 Route::get('/subject-grade/students', [SubjectGradeController::class, 'students'])->name('subject-grade.students');
 Route::get('/subject-grade/student/{id}', [SubjectGradeController::class, 'student'])->name('subject-grade.student');
-
-Route::prefix('/calculate')->group(function () {
-
-    Route::get('/criteria-comparison', [CriteriaComparisonController::class, 'index']);
-    Route::post('/criteria-comparison', [CriteriaComparisonController::class, 'store'])->name('criteria-comparison.store');
-
-    Route::get('/alternative-comparison', [AlternativeComparisonController::class, 'index']);
-    Route::get('/alternative-comparison/{id}', [AlternativeComparisonController::class, 'show']);
-    Route::post('/alternative-comparison', [AlternativeComparisonController::class, 'store'])->name('alternative-comparison.store');
-
-    Route::get('/result', [CalculateController::class, 'index']);
-//    Route::get('/result/download', [CalculateController::class, 'downloadPdf'])->name('calculate-download');
-    Route::get('/result/print', [CalculateController::class, 'report'])->name('calculate-report');
-    Route::get('/result/print/decree', [CalculateController::class, 'decree'])->name('decree');
-
-});
 
 

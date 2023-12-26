@@ -9,46 +9,45 @@
             </div>
             <div class="card-body">
                 <main class="form-master">
-                    <form action="{{ route('subject.update', $subject->id) }}" method="post">
+                    <form action="{{ route('subject-grade.update', $subjectGrade->id) }}" method="post">
                         @csrf
                         @method('PUT')
 
                         <!-- Equivalent to... -->
                         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-                        <input type="hidden" name="id" value="{{ $subject->id }}" />
+                        <input type="hidden" name="id" value="{{ $subjectGrade->id }}" />
                         <div class="form">
-                            <label for="code">Kode Mata Pelajaran</label>
-                            <input type="text" name="code" class="form-control rounded-top  @error('code') is-invalid @enderror" id="code" placeholder="Nama Kriteria" required value="{{ old('code', $subject->code) }}">
-                            @error('code')
+                            <input id="type" name="type" value={{ $type }} hidden>
+{{--                            <input id="student_id" name="student_id" value={{ $subjectGrade->students->id }} hidden>--}}
+                            <label for="student_id">Nama Siswa</label>
+                            <select disabled class="form-select  @error('student_id') is-invalid @enderror" id="student_id" name="student_id">
+                                <option selected value={{ $subjectGrade->students->id }}>{{ $subjectGrade->students->full_name }}</option>
+                            </select>
+                            @error('student_id')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
                             @enderror
-                            <label for="name">Nama Mata Pelajaran</label>
-                            <input type="text" name="name" class="form-control rounded-top  @error('name') is-invalid @enderror" id="name" placeholder="Nama Kriteria" required value="{{ old('name', $subject->name) }}">
-                            @error('name')
+                            <label for="subject_id">Mata Pelajaran</label>
+                            <select disabled class="form-select  @error('subject_id') is-invalid @enderror" id="subject_id" name="subject_id">
+                                <option selected required value="{{ old('subject_id') }}">{{ $subjectGrade->subjects->name }}</option>
+                            </select>
+                            @error('subject_id')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
                             @enderror
-                            <label for="timeAllocationInWeek">Jangka Waktu</label>
-                            <input type="text" name="timeAllocationInWeek" class="form-control rounded-top  @error('timeAllocationInWeek') is-invalid @enderror" id="timeAllocationInWeek" placeholder="Jangka Waktu Dalam Minggu" required value="{{ old('timeAllocationInWeek', $subject->time_allocation_in_week) }}">
-                            @error('timeAllocationInWeek')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                            <label for="semester">Semester</label>
-                            <input type="text" name="semester" class="form-control rounded-top  @error('semester') is-invalid @enderror" id="semester" placeholder="Semester" required value="{{ old('semester', $subject->semester) }}">
-                            @error('semester')
+                            <label for="grade">Nilai</label>
+                            <input type="text" name="grade" class="form-control rounded-top  @error('grade') is-invalid @enderror" id="grade" placeholder="Nilai" required value="{{ old('grade', $subjectGrade->grade) }}">
+                            @error('grade')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
                             @enderror
                         </div>
                         <div class="col text-right">
-                            <a href="/subject" class="w-30 btn btn-md btn-danger mt-3">Batal</a>
-                            <button class="w-30 btn btn-md btn-primary mt-3" type="submit">Update</button>
+                            <a href="/subject-grade/{{$type}}/@if($type === 'student') {{$subjectGrade->students->id}} @elseif($type === 'subject') {{$subjectGrade->subjects->id}} @endif" class="w-30 btn btn-md btn-danger mt-3">Batal</a>
+                            <button class="w-30 btn btn-md btn-primary mt-3" type="submit">Simpan</button>
                         </div>
                     </form>
                 </main>

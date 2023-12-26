@@ -1,8 +1,8 @@
-<form action="{{ route('subject.destroy', $subject->id) }}" method="post">
+<form action="{{ route('subject-grade.destroy', ['type' => $type, 'id' => $subjectGrade->id, 'typeId' => $typeId]) }}" method="post">
     <div class="modal-body">
         @csrf
         @method('DELETE')
-        <h5 class="text-center">Apakah anda yakin ingin menghapus {{ $subject->name }}?</h5>
+        <h5 class="text-center">Apakah anda yakin ingin menghapus?</h5>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelButton">Batal</button>
