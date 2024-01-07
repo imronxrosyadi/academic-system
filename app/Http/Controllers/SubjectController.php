@@ -10,9 +10,15 @@ use App\Models\PriorityVectorCriteria;
 use App\Models\Rank;
 use App\Models\Subject;
 use Illuminate\Http\Request;
+use App\Service\EncryptService;
 
 class SubjectController extends Controller
 {
+    public $encrpytService;
+
+    public function getEncryptService() {
+        return $this->encrpytService = new EncryptService();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -20,10 +26,14 @@ class SubjectController extends Controller
      */
     public function index()
     {
+        $subjects = Subject::latest()->paginate(100)->withQueryString();
+        foreach ($subjects as $subject) {
+            $subject = $this->decryptSubject($subject);
+        }
         return view('subject.index', [
             'title' => 'Subject',
             'active' => 'subject',
-            "subjects" => Subject::latest()->paginate(100)->withQueryString()
+            "subjects" => $subjects
         ]);
     }
 
@@ -55,7 +65,16 @@ class SubjectController extends Controller
             'semester' => 'required|max:255'
         ]);
 
-//        @dd($request);
+        $code = $this->getEncryptService()->encrypt($validatedData['code']);
+        $name = $this->getEncryptService()->encrypt($validatedData['name']);
+        $timeAllocationInWeek = $this->getEncryptService()->encrypt($validatedData['time_allocation_in_week']);
+        $semeter = $this->getEncryptService()->encrypt($validatedData['semester']);
+
+        $validatedData['code'] = $code;
+        $validatedData['name'] = $name;
+        $validatedData['time_allocation_in_week'] = $timeAllocationInWeek;
+        $validatedData['semester'] = $semeter;
+
         Subject::create($validatedData);
 
         return redirect('/subject')
@@ -76,6 +95,7 @@ class SubjectController extends Controller
     public function edit($id)
     {
         $subject = Subject::where('id', $id)->first();
+        $subject = $this->decryptSubject($subject);
         return view('subject.edit', [ "subject" => $subject ]);
     }
 
@@ -89,10 +109,10 @@ class SubjectController extends Controller
     {
         $subject = Subject::where('id', $id)->first();
         $subject->update([
-            'code'   => $request->code,
-            'name'   => $request->name,
-            'time_allocation_in_week'   => $request->timeAllocationInWeek,
-            'semester'   => $request->semester
+            'code'   => $this->getEncryptService()->encrypt($request->code),
+            'name'   => $this->getEncryptService()->encrypt($request->name),
+            'time_allocation_in_week'   => $this->getEncryptService()->encrypt($request->timeAllocationInWeek),
+            'semester'   => $this->getEncryptService()->encrypt($request->semester)
         ]);
 
         return redirect()
@@ -103,6 +123,7 @@ class SubjectController extends Controller
     public function delete($code)
     {
         $subject = Subject::where('id', $code)->first();
+        $subject = $this->decryptSubject($subject);
         return view('subject.delete', [ "subject" => $subject ]);
     }
 
@@ -129,6 +150,22 @@ class SubjectController extends Controller
             ->route($page)
             ->with('success', $success)
             ->with('err', $err);
+    }
+
+    public function decryptSubject(Subject $subject) : Subject {
+        $subject->code = $this->getEncryptService()->decrypt($subject->code);
+        $subject->name = $this->getEncryptService()->decrypt($subject->name);
+        $subject->time_allocation_in_week = $this->getEncryptService()->decrypt($subject->time_allocation_in_week);
+        $subject->semester = $this->getEncryptService()->decrypt($subject->semester);
+        return $subject;
+    }
+
+    public function encryptSubject(Subject $subject) : Subject {
+        $subject->code = $this->getEncryptService()->encrypt($subject->code);
+        $subject->name = $this->getEncryptService()->encrypt($subject->name);
+        $subject->time_allocation_in_week = $this->getEncryptService()->encrypt($subject->time_allocation_in_week);
+        $subject->semester = $this->getEncryptService()->encrypt($subject->semester);
+        return $subject;
     }
 
 }

@@ -34,7 +34,7 @@
             <span>Mata Pelajaran</span></a>
     </li>
 
-    <li class="nav-item  {{ Request::is('subject-grade/**') ? 'active' : '' }}">
+    <li class="nav-item  {{ Request::is('subject-grade/**') || Request::is('subject-grade') ? 'active' : '' }}">
         <a class="nav-link" href="/subject-grade">
             <i class="fas fa-splotch"></i>
             <span>Nilai Mata Pelajaran</span></a>

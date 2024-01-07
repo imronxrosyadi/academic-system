@@ -11,10 +11,17 @@ use App\Models\Rank;
 use App\Models\Student;
 use App\Models\Subject;
 use App\Models\SubjectGrade;
+use App\Service\EncryptService;
 use Illuminate\Http\Request;
 
 class SubjectGradeController extends Controller
 {
+    public $encrpytService;
+
+    public function getEncryptService() {
+        return $this->encrpytService = new EncryptService();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -22,11 +29,20 @@ class SubjectGradeController extends Controller
      */
     public function index()
     {
+        $students = Student::latest()->paginate(100)->withQueryString();
+        foreach ($students as $student) {
+            $this->decryptStudent($student);
+        }
+
+        $subjectGrades = SubjectGrade::latest()->paginate(100)->withQueryString();
+        foreach ($subjectGrades as $subjectGrade) {
+            $this->decryptSubjectGrade($subjectGrade);
+        }
         return view('subject-grade.index', [
             'title' => 'Subject Grade',
             'active' => 'subject-grade',
-            "subject-grades" => SubjectGrade::latest()->paginate(100)->withQueryString(),
-            'students' => Student::latest()->paginate(100)->withQueryString()
+            "subject-grades" => $subjectGrades,
+            'students' => $students
         ]);
     }
 
@@ -45,7 +61,7 @@ class SubjectGradeController extends Controller
         } else if ($type === 'subject') {
             $subjectGrades = SubjectGrade::with(['subjects','students'])->where('subject_id', $id)->get();
         }
-        @dd($subjectGrades);
+
 
 
 
@@ -57,21 +73,29 @@ class SubjectGradeController extends Controller
 
     public function createByType($type, $id)
     {
-        $subjectGrades = [];
+//        $subjectGrades = [];
         $subjects = [];
         $students = [];
         $student = new Student();
         $subject = new Subject();
         if ($type === 'student') {
-            $subjectGrades = SubjectGrade::with(['subjects','students'])->where('student_id', $id)
-                ->whereIn('subject_id', Subject::all()->where('id' ,'>' ,0)->pluck('id')->toArray())
-                ->get();
+//            $subjectGrades = SubjectGrade::with(['subjects','students'])->where('student_id', $id)
+//                ->whereIn('subject_id', Subject::all()->where('id' ,'>' ,0)->pluck('id')->toArray())
+//                ->get();
             $subjects = Subject::all()->whereNotIn('id', SubjectGrade::all()->where('student_id', $id)->where('subject_id', '>', 0)->pluck('subject_id')->toArray());
+            foreach ($subjects as $subject) {
+                $this->decryptSubject($subject);
+            }
             $student = Student::all()->where('id', $id)->firstOrFail();
+            $student = $this->decryptStudent($student);
         } else if ($type === 'subject') {
-            $subjectGrades = SubjectGrade::with(['subjects','students'])->where('subject_id', $id)->get();
+//            $subjectGrades = SubjectGrade::with(['subjects','students'])->where('subject_id', $id)->get();
             $students = Student::all()->whereNotIn('id', SubjectGrade::all()->where('subject_id', $id)->where('student_id', '>', 0)->pluck('student_id')->toArray());
+            foreach ($students as $student) {
+                $this->decryptStudent($student);
+            }
             $subject = Subject::all()->where('id', $id)->firstOrFail();
+            $subject = $this->decryptSubject($subject);
         }
 
         return view('subject-grade.create', [
@@ -98,6 +122,10 @@ class SubjectGradeController extends Controller
             'student_id' => 'required',
             'subject_id' => 'required|max:255'
         ]);
+
+        $grade = $this->getEncryptService()->encrypt($validatedData['grade']);
+
+        $validatedData['grade'] = $grade;
         SubjectGrade::create($validatedData);
 
         if ($request->type === 'student') {
@@ -123,7 +151,9 @@ class SubjectGradeController extends Controller
     public function editByType($id, $type)
     {
         $subjectGrade = SubjectGrade::with(['subjects','students'])->where('id', $id)->firstOrFail();
-
+        $this->decryptSubjectGrade($subjectGrade);
+        $this->decryptSubject($subjectGrade->subjects);
+        $this->decryptStudent($subjectGrade->students);
         return view('subject-grade.edit', [
             'subjectGrade' => $subjectGrade,
             'active' => 'subject-grade',
@@ -141,7 +171,7 @@ class SubjectGradeController extends Controller
     {
         $subjectGrade = SubjectGrade::where('id', $id)->first();
         $subjectGrade->update([
-            'grade'   => $request->grade
+            'grade'   => $this->getEncryptService()->encrypt($request->grade)
         ]);
 
         if ($request->type === 'student') {
@@ -156,6 +186,7 @@ class SubjectGradeController extends Controller
     public function delete($id, $type, $typeId)
     {
         $subjectGrade = SubjectGrade::where('id', $id)->firstOrFail();
+        $subjectGrade = $this->decryptSubjectGrade($subjectGrade);
         return view('subject-grade.delete', [
             "subjectGrade" => $subjectGrade,
             'active' => 'subject-grade',
@@ -196,8 +227,12 @@ class SubjectGradeController extends Controller
 
     public function subjects()
     {
+        $subjects = Subject::latest()->paginate(100)->withQueryString();
+        foreach ($subjects as $subject) {
+            $this->decryptSubject($subject);
+        }
         return view('subject-grade.index-subject', [
-            'subjects' => Subject::latest()->paginate(100)->withQueryString(),
+            'subjects' => $subjects,
             'active' => 'subject-grade'
         ]);
     }
@@ -205,7 +240,12 @@ class SubjectGradeController extends Controller
     public function subject($id)
     {
         $subjectGrades = SubjectGrade::with(['subjects','students'])->where('subject_id', $id)->get();
+        foreach ($subjectGrades as $subjectGrade) {
+            $this->decryptSubjectGrade($subjectGrade);
+            $this->decryptStudent($subjectGrade->students);
+        }
         $subject = Subject::where('id', $id)->firstOrFail();
+        $subject = $this->decryptSubject($subject);
         return view('subject-grade.subject', [
             "subjectGrades" => $subjectGrades ,
             'active' => 'subject-grade',
@@ -217,8 +257,12 @@ class SubjectGradeController extends Controller
 
     public function students()
     {
+        $students = Student::latest()->paginate(100)->withQueryString();
+        foreach ($students as $student) {
+            $this->decryptStudent($student);
+        }
         return view('subject-grade.index-student', [
-            'students' => Student::latest()->paginate(100)->withQueryString(),
+            'students' => $students,
             'active' => 'subject-grade'
         ]);
     }
@@ -226,7 +270,12 @@ class SubjectGradeController extends Controller
     public function student($id)
     {
         $subjectGrades = SubjectGrade::with(['subjects','students'])->where('student_id', $id)->get();
+        foreach ($subjectGrades as $subjectGrade) {
+            $this->decryptSubjectGrade($subjectGrade);
+            $this->decryptSubject($subjectGrade->subjects);
+        }
         $student = Student::where('id', $id)->firstOrFail();
+        $student = $this->decryptStudent($student);
         return view('subject-grade.student', [
             "subjectGrades" => $subjectGrades,
             'active' => 'subject-grade',
@@ -234,6 +283,34 @@ class SubjectGradeController extends Controller
             "typeId" => $id,
             'student' => $student
         ]);
+    }
+
+    public function decryptStudent(Student $student): Student
+    {
+        $student->id_number = $this->getEncryptService()->decrypt($student->id_number);
+        $student->nisn = $this->getEncryptService()->decrypt($student->nisn);
+        $student->full_name = $this->getEncryptService()->decrypt($student->full_name);
+        $student->nickname = $this->getEncryptService()->decrypt($student->nickname);
+        $student->gender = $this->getEncryptService()->decrypt($student->gender);
+        $student->birth_place = $this->getEncryptService()->decrypt($student->birth_place);
+        $student->birth_date = $this->getEncryptService()->decrypt($student->birth_date);
+        $student->religion = $this->getEncryptService()->decrypt($student->religion);
+        $student->phone_number = $this->getEncryptService()->decrypt($student->phone_number);
+        $student->address = $this->getEncryptService()->decrypt($student->address);
+        return $student;
+    }
+
+    public function decryptSubject(Subject $subject) : Subject {
+        $subject->code = $this->getEncryptService()->decrypt($subject->code);
+        $subject->name = $this->getEncryptService()->decrypt($subject->name);
+        $subject->time_allocation_in_week = $this->getEncryptService()->decrypt($subject->time_allocation_in_week);
+        $subject->semester = $this->getEncryptService()->decrypt($subject->semester);
+        return $subject;
+    }
+
+    public function decryptSubjectGrade(SubjectGrade $subjectGrade) : SubjectGrade {
+        $subjectGrade->grade = $this->getEncryptService()->decrypt($subjectGrade->grade);
+        return $subjectGrade;
     }
 
 }
