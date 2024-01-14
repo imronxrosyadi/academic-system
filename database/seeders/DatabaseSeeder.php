@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
 //            IndeksRandomConsistencySeeder::class,
 //            AlternativeSeeder::class,
 //            CriteriaSeeder::class,
-            SubjectSeeder::class,
+//            SubjectSeeder::class,
             UserSeeder::class
         ]);
         // User::factory(3)->create();
