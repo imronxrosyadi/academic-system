@@ -25,6 +25,7 @@ class CreateStudentsTable extends Migration
             $table->string('religion');
             $table->string('phone_number');
             $table->string('address');
+            $table->foreignId('class_id')->references('id')->on('classes');
             $table->timestamps();
         });
     }

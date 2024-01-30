@@ -10,6 +10,10 @@ class EncryptService {
         return $this->key = config('aes.key');
     }
 
+    public function getEncryptFlag() {
+        return $this->key = config('aes.flag');
+    }
+
     function encrypt($string) {
         $key = $this->getKey();
         $cipher = "AES-256-CBC";
@@ -34,5 +38,12 @@ class EncryptService {
             return $original_plaintext;
         }
         return false;
+    }
+
+    function injectEnc($string) {
+        if ($this->getEncryptFlag()) {
+            return $this->encrypt($string);
+        }
+        return $string;
     }
 }

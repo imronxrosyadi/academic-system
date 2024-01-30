@@ -9,15 +9,11 @@ use App\Service\EncryptService;
 class StudentController extends Controller
 {
     public $encrpytService;
-//    public $key;
-//
-//    public function getKey() {
-//        return $this->key = config('aes.key');
-//    }
 
     public function getEncryptService() {
         return $this->encrpytService = new EncryptService();
     }
+
     /**
      * Display a listing of the resource.
      *
