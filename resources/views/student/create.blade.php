@@ -26,6 +26,17 @@
                                 {{ $message }}
                             </div>
                             @enderror
+                            <label for="class_id">Kelas</label>
+                            <select class="form-select" aria-label="class_id" name="class_id" id="religion" style="color: grey">
+                                @foreach($clazz as $clz)
+                                    <option value={{ $clz->id }}>Kelas {{ $clz->name  }} - Semester {{ $clz->semester }}</option>
+                                @endforeach
+                            </select>
+                            @error('class_id')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
                             <label for="full_name">Nama Lengkap</label>
                             <input type="text" name="full_name" class="form-control rounded-top  @error('full_name') is-invalid @enderror" id="full_name" placeholder="Nama Lengkap" required value="{{ old('full_name') }}">
                             @error('full_name')

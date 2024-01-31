@@ -42,9 +42,14 @@ class StudentController extends Controller
      */
     public function create()
     {
+        $clazz = Clazz::all();
+        foreach ($clazz as $clz) {
+            $this->decryptClass($clz);
+        }
         return view('student.create', [
             'title' => 'Student',
-            'active' => 'student'
+            'active' => 'student',
+            'clazz' => $clazz
         ]);
     }
 
@@ -67,6 +72,7 @@ class StudentController extends Controller
             'religion' => 'required|max:30',
             'phone_number' => 'required|max:15',
             'address' => 'required|max:255',
+            'class_id' => 'required'
         ]);
 
         $id_number = $this->getEncryptService()->encrypt($validatedData['id_number']);
@@ -79,17 +85,6 @@ class StudentController extends Controller
         $religion = $this->getEncryptService()->encrypt($validatedData['religion']);
         $phone_number = $this->getEncryptService()->encrypt($validatedData['phone_number']);
         $address = $this->getEncryptService()->encrypt($validatedData['address']);
-
-//        $id_number = $this->getEncryptService()->encrypt($validatedData['id_number'], $this->getKey());
-//        $nisn = $this->getEncryptService()->encrypt($validatedData['nisn'], $this->getKey());
-//        $full_name = $this->getEncryptService()->encrypt($validatedData['full_name'], $this->getKey());
-//        $nickname = $this->getEncryptService()->encrypt($validatedData['nickname'], $this->getKey());
-//        $gender = $this->getEncryptService()->encrypt($validatedData['gender'], $this->getKey());
-//        $birth_place = $this->getEncryptService()->encrypt($validatedData['birth_place'], $this->getKey());
-//        $birth_date = $this->getEncryptService()->encrypt($validatedData['birth_date'], $this->getKey());
-//        $religion = $this->getEncryptService()->encrypt($validatedData['religion'], $this->getKey());
-//        $phone_number = $this->getEncryptService()->encrypt($validatedData['phone_number'], $this->getKey());
-//        $address = $this->getEncryptService()->encrypt($validatedData['address'], $this->getKey());
 
         $validatedData['id_number'] = $id_number;
         $validatedData['nisn'] = $nisn;
@@ -121,20 +116,17 @@ class StudentController extends Controller
 
     public function edit($id)
     {
-        $student = Student::where('id', $id)->first();
-
+        $student = Student::with('classes')->where('id', $id)->first();
+        $clazz = Clazz::where('id', '<>', $student->classes->id)->get();
+        foreach ($clazz as $clz) {
+            $this->decryptClass($clz);
+        }
         $student = $this->decryptStudent($student);
-
-//        $student->id_number = $this->getEncryptService()->decrypt($student->id_number, $this->getKey());
-//        $student->nisn = $this->getEncryptService()->decrypt($student->nisn, $this->getKey());
-//        $student->full_name = $this->getEncryptService()->decrypt($student->full_name, $this->getKey());
-//        $student->gender = $this->getEncryptService()->decrypt($student->gender, $this->getKey());
-//        $student->birth_place = $this->getEncryptService()->decrypt($student->birth_place, $this->getKey());
-//        $student->birth_date = $this->getEncryptService()->decrypt($student->birth_date, $this->getKey());
-//        $student->religion = $this->getEncryptService()->decrypt($student->religion, $this->getKey());
-//        $student->phone_number = $this->getEncryptService()->decrypt($student->phone_number, $this->getKey());
-//        $student->address = $this->getEncryptService()->decrypt($student->address, $this->getKey());
-        return view('student.edit', [ "student" => $student ]);
+        $this->decryptClass($student->classes);
+        return view('student.edit', [
+            "student" => $student,
+            'clazz' => $clazz
+        ]);
     }
 
     /**
@@ -147,17 +139,6 @@ class StudentController extends Controller
     {
         $student = Student::where('id', $id)->first();
         $student->update([
-//            'id_number' => $request->id_number,
-//            'nisn' => $request->nisn,
-//            'full_name' => $request->full_name,
-//            'nickname' => $request->nickname,
-//            'gender' => $request->gender,
-//            'birth_place' => $request->birth_place,
-//            'birth_date' => $request->birth_date,
-//            'religion' => $request->religion,
-//            'phone_number' => $request->phone_number,
-//            'address' => $request->address
-
             'id_number' => $this->getEncryptService()->encrypt($request->id_number),
             'nisn' => $this->getEncryptService()->encrypt($request->nisn),
             'full_name' => $this->getEncryptService()->encrypt($request->full_name),
