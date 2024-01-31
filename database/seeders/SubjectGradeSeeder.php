@@ -14,9 +14,6 @@ class SubjectGradeSeeder extends Seeder
      */
     public function run()
     {
-        SubjectGrade::create([
-            'code' => 'MT1',
-            'name' => 'Matpel1'
-        ]);
+        // nothing to do
     }
 }

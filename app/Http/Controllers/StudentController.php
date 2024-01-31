@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Clazz;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use App\Service\EncryptService;
@@ -21,20 +22,12 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::latest()->paginate(100)->withQueryString();
+        $students = Student::with('classes')->latest()->paginate(100)->withQueryString();
         foreach ($students as $student) {
             $this->decryptStudent($student);
-
-//            $student->id_number = $this->getEncryptService()->decrypt($student->id_number, $this->getKey());
-//            $student->nisn = $this->getEncryptService()->decrypt($student->nisn, $this->getKey());
-//            $student->full_name = $this->getEncryptService()->decrypt($student->full_name, $this->getKey());
-//            $student->gender = $this->getEncryptService()->decrypt($student->gender, $this->getKey());
-//            $student->birth_place = $this->getEncryptService()->decrypt($student->birth_place, $this->getKey());
-//            $student->birth_date = $this->getEncryptService()->decrypt($student->birth_date, $this->getKey());
-//            $student->religion = $this->getEncryptService()->decrypt($student->religion, $this->getKey());
-//            $student->phone_number = $this->getEncryptService()->decrypt($student->phone_number, $this->getKey());
-//            $student->address = $this->getEncryptService()->decrypt($student->address, $this->getKey());
+            // class not encrypted
         }
+
         return view('student.index', [
             'title' => 'Student',
             'active' => 'student',
@@ -240,6 +233,27 @@ class StudentController extends Controller
         $student->religion = $this->getEncryptService()->encrypt($student->religion);
         $student->phone_number = $this->getEncryptService()->encrypt($student->phone_number);
         $student->address = $this->getEncryptService()->encrypt($student->address);
+        return $student;
+    }
+
+    public function decryptClass(Clazz $class) : Clazz {
+        $class->name = $this->getEncryptService()->decrypt($class->name);
+        $class->semester = $this->getEncryptService()->decrypt($class->semester);
+        return $class;
+    }
+
+    public function decryptStudentAndClass(Student $student): Student
+    {
+        $student->id_number = $this->getEncryptService()->decrypt($student->id_number);
+        $student->nisn = $this->getEncryptService()->decrypt($student->nisn);
+        $student->full_name = $this->getEncryptService()->decrypt($student->full_name);
+        $student->nickname = $this->getEncryptService()->decrypt($student->nickname);
+        $student->gender = $this->getEncryptService()->decrypt($student->gender);
+        $student->birth_place = $this->getEncryptService()->decrypt($student->birth_place);
+        $student->birth_date = $this->getEncryptService()->decrypt($student->birth_date);
+        $student->religion = $this->getEncryptService()->decrypt($student->religion);
+        $student->phone_number = $this->getEncryptService()->decrypt($student->phone_number);
+        $student->address = $this->getEncryptService()->decrypt($student->address);
         return $student;
     }
 

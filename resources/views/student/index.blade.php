@@ -43,14 +43,15 @@
                             <tr>
                                 <th>No</th>
                                 <th>NISN</th>
-                                <th>Full Name</th>
-                                <th>Nickname</th>
-                                <th>Gender</th>
-                                <th>Birth Place and Date</th>
-                                <th>Religion</th>
-                                <th>Phone Number</th>
-                                <th>Address</th>
-                                <th>Action</th>
+{{--                                <th>Kelas</th>--}}
+                                <th>Nama Lengkap</th>
+                                <th>Panggilan</th>
+                                <th>Jenis Kelamin</th>
+                                <th>Tempat & Tanggal Lahir</th>
+                                <th>Agama</th>
+                                <th>No. Telp</th>
+                                <th>Alamat</th>
+                                <th>Aksi</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -58,6 +59,7 @@
                                 <tr>
                                     <th scope="row">{{ $index+1 }}</th>
                                     <td>{{ $student->nisn; }}</td>
+{{--                                    <td>{{ $student->classes->name; }}</td>--}}
                                     <td>{{ $student->full_name; }}</td>
                                     <td>{{ $student->nickname; }}</td>
                                     <td>{{ $student->gender; }}</td>

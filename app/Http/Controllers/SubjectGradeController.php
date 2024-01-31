@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AlternativeComparison;
+use App\Models\Clazz;
 use App\Models\Criteria;
 use App\Models\CriteriaComparison;
 use App\Models\PriorityVectorAlternative;
@@ -29,20 +30,19 @@ class SubjectGradeController extends Controller
      */
     public function index()
     {
-        $students = Student::latest()->paginate(100)->withQueryString();
-        foreach ($students as $student) {
-            $this->decryptStudent($student);
+        $classes = Clazz::orderBy('name', 'DESC')->get();
+        $filteredClasses = [];
+        foreach ($classes as $class) {
+            $this->decryptClass($class);
+            if ($class->semester === '1') {
+                $filteredClasses[] = $class;
+            }
         }
 
-        $subjectGrades = SubjectGrade::latest()->paginate(100)->withQueryString();
-        foreach ($subjectGrades as $subjectGrade) {
-            $this->decryptSubjectGrade($subjectGrade);
-        }
         return view('subject-grade.index', [
             'title' => 'Subject Grade',
             'active' => 'subject-grade',
-            "subject-grades" => $subjectGrades,
-            'students' => $students
+            'classes' => $filteredClasses
         ]);
     }
 
@@ -274,14 +274,48 @@ class SubjectGradeController extends Controller
             $this->decryptSubjectGrade($subjectGrade);
             $this->decryptSubject($subjectGrade->subjects);
         }
-        $student = Student::where('id', $id)->firstOrFail();
+        $student = Student::with('classes')->where('id', $id)->firstOrFail();
         $student = $this->decryptStudent($student);
+        $clazz = $this->decryptClass($student->classes);
         return view('subject-grade.student', [
             "subjectGrades" => $subjectGrades,
             'active' => 'subject-grade',
             "type" => 'student',
             "typeId" => $id,
-            'student' => $student
+            'student' => $student,
+            'clazz' => $clazz
+        ]);
+    }
+
+    public function class($id, $semester)
+    {
+        $students = Student::where('class_id', $id)->get();
+        $clazz = Clazz::where('id', $id)->orWhere('semester', $semester)->get();
+        foreach ($students as $student) {
+            $this->decryptStudent($student);
+        }
+        $this->decryptClass($clazz->first());
+
+        return view('subject-grade.class-student', [
+            'active' => 'subject-grade',
+            'clazz' => $clazz,
+            'students' => $students
+        ]);
+    }
+
+    public function semester($id)
+    {
+        $filteredClazz = [];
+        $clazzs = Clazz::all();
+        foreach ($clazzs as $clazz) {
+            $this->decryptClass($clazz);
+            if ($clazz->name === $id) {
+                $filteredClazz[] = $clazz;
+            }
+        }
+        return view('subject-grade.index-class', [
+            'active' => 'subject-grade',
+            'clazzs' => $filteredClazz
         ]);
     }
 
@@ -311,6 +345,12 @@ class SubjectGradeController extends Controller
     public function decryptSubjectGrade(SubjectGrade $subjectGrade) : SubjectGrade {
         $subjectGrade->grade = $this->getEncryptService()->decrypt($subjectGrade->grade);
         return $subjectGrade;
+    }
+
+    public function decryptClass(Clazz $clazz) : Clazz {
+        $clazz->name = $this->getEncryptService()->decrypt($clazz->name);
+        $clazz->semester = $this->getEncryptService()->decrypt($clazz->semester);
+        return $clazz;
     }
 
 }

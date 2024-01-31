@@ -20,19 +20,42 @@
 
         <div class="col-lg-10">
             <div class="row mb-3">
-                <div class="col-lg-12 text-center">
-                    <h1>Nilai Mata Pelajaran</h1>
+                <div class="col-lg-6">
+                    <h1>Nilai Mata Pelajaran Kelas {{ $clazz->first()->name; }}</h1>
                 </div>
             </div>
-            <div class="card mb-4">
-                <div class="row justify-content-center p-5">
-                    <h3>Silahkan Pilih Kelas</h3>
-                    <div class="list-group">
-                        @foreach($classes as $class)
-                            <a href="/subject-grade/semester/{{$class->name}}" class="list-group-item list-group-item-action">Kelas {{ $class->name }}</a>
-                        @endforeach
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Tabel Data Siswa Kelas {{ $clazz->first()->name; }} - Semester {{ $clazz->first()->semester;  }}</h6>
+                </div>
+                <h1>tai</h1>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>NISN</th>
+                                <th>Full Name</th>
+                                <th>Nickname</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($students as $index => $student)
+                                <tr>
+                                    <th scope="row">{{ $index+1 }}</th>
+                                    <td><a href="/subject-grade/student/{{$student->id}}" >{{ $student->nisn; }}</a></td>
+                                    <td>{{ $student->full_name; }}</td>
+                                    <td>{{ $student->nickname; }}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+            </div>
+            <div>
+                <a href="/subject-grade" class="w-30 mt-3"><- Back</a>
             </div>
         </div>
     </div>

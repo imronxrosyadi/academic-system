@@ -26,13 +26,16 @@
             </div>
             <div class="card mb-4">
                 <div class="row justify-content-center p-5">
-                    <h3>Silahkan Pilih Kelas</h3>
+                    <h3>Silahkan Pilih Semester</h3>
                     <div class="list-group">
-                        @foreach($classes as $class)
-                            <a href="/subject-grade/semester/{{$class->name}}" class="list-group-item list-group-item-action">Kelas {{ $class->name }}</a>
+                        @foreach($clazzs as $class)
+                            <a href="/subject-grade/class/{{$class->id}}/{{$class->semester}}" class="list-group-item list-group-item-action">Semester {{ $class->semester }}</a>
                         @endforeach
                     </div>
                 </div>
+            </div>
+            <div>
+                <a href="/subject-grade" class="w-30 mt-3"><- Back</a>
             </div>
         </div>
     </div>

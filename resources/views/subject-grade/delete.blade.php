@@ -1,4 +1,4 @@
-<form action="{{ route('subject-grade.destroy', ['type' => $type, 'id' => $subjectGrade->id, 'typeId' => $typeId]) }}" method="post">
+<form action="{{ route('subject-grade.destroys', ['type' => $type, 'id' => $subjectGrade->id, 'typeId' => $typeId]) }}" method="post">
     <div class="modal-body">
         @csrf
         @method('DELETE')

@@ -101,7 +101,7 @@
                 </div>
             </div>
             <div>
-                <a href="/subject-grade/students" class="w-30 mt-3"><- Back</a>
+                <a href="/subject-grade/class/{{$clazz->id}}/{{$clazz->semester}}" class="w-30 mt-3"><- Back</a>
             </div>
         </div>
     </div>

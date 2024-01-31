@@ -15,4 +15,9 @@ class Student extends Model
     {
         return $this->belongsTo(SubjectGrade::class, 'id');
     }
+
+    public function classes()
+    {
+        return $this->belongsTo(Clazz::class, 'class_id', 'id');
+    }
 }

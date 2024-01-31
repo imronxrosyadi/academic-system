@@ -66,12 +66,14 @@ Route::get('/student/delete/{id}', [StudentController::class, 'delete']);
 
 Route::resource('/subject-grade', SubjectGradeController::class)->except(['show']);
 Route::get('/subject-grade/delete/{type}/{id}/{typeId}', [SubjectGradeController::class, 'delete']);
-Route::delete('/subject-grade/dest/{type}/{id}/{typeId}', [SubjectGradeController::class, 'destroy'])->name('subject-grade.destroy');
+Route::delete('/subject-grade/dest/{type}/{id}/{typeId}', [SubjectGradeController::class, 'destroy'])->name('subject-grade.destroys');
 Route::get('/subject-grade/create/{type}/{id}', [SubjectGradeController::class, 'createByType'])->name('subject-grade.createByType');
 Route::get('/subject-grade/edit/{type}/{id}', [SubjectGradeController::class, 'editByType'])->name('subject-grade.editByType');
 Route::get('/subject-grade/subjects', [SubjectGradeController::class, 'subjects'])->name('subject-grade.subjects');
 Route::get('/subject-grade/subject/{id}', [SubjectGradeController::class, 'subject'])->name('subject-grade.subject');
 Route::get('/subject-grade/students', [SubjectGradeController::class, 'students'])->name('subject-grade.students');
 Route::get('/subject-grade/student/{id}', [SubjectGradeController::class, 'student'])->name('subject-grade.student');
+Route::get('/subject-grade/semester/{id}', [SubjectGradeController::class, 'semester'])->name('subject-grade.semester');
+Route::get('/subject-grade/class/{id}/{semester}', [SubjectGradeController::class, 'class'])->name('subject-grade.class');
 
 
